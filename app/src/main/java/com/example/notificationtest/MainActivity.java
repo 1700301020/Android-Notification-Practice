@@ -7,13 +7,18 @@ import androidx.core.app.NotificationManagerCompat;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.File;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -39,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static String createNotificationChannel(Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel notificationChannel=new NotificationChannel(channelId,channelName,NotificationManager.IMPORTANCE_DEFAULT);
+            //要显示横幅通知 ，NotificationChannel在创建的时候第三个参数还要设置成NotificationManager.IMPORTANCE_HIGH，不然也弹不出来
+            NotificationChannel notificationChannel=new NotificationChannel(channelId,channelName,NotificationManager.IMPORTANCE_MAX);
             notificationChannel.setDescription(channelDescription);
             NotificationManager notificationManager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
@@ -53,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.send_notice:
+                Intent intent=new Intent(this,NotificationAcvitity.class);
+                PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                 NotificationCompat.Builder builder=new NotificationCompat.Builder(getApplicationContext(), Objects.requireNonNull(createNotificationChannel(this)));
                 Notification notification=builder
                         .setContentTitle("This is content title")
@@ -60,6 +68,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher))
+                        .setContentIntent(pendingIntent)
+                        /*.setAutoCancel(true)//通知图标消失
+                        .setSound(Uri.fromFile(new File("/system/media/audio/ringtones/Luna.ogg")))//通知铃声
+                        .setLights(Color.BLUE,1000,1000)//呼吸灯*/
+                        //.setStyle(new NotificationCompat.BigTextStyle().bigText("This is content text This is content text This is content text This is content text This is content text This is content text This is content text"))//长文本
+                        //.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_background)))//图片背景
+                        //.setPriority(NotificationCompat.PRIORITY_MAX)//优先级未实现
+                        //.setFullScreenIntent(pendingIntent,true)//全屏未实现
                         .build();
                 NotificationManagerCompat.from(getApplicationContext()).notify(1,notification);
                 break;
