@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String createNotificationChannel(Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             //要显示横幅通知 ，NotificationChannel在创建的时候第三个参数还要设置成NotificationManager.IMPORTANCE_HIGH，不然也弹不出来
-            NotificationChannel notificationChannel=new NotificationChannel(channelId,channelName,NotificationManager.IMPORTANCE_MAX);
+            NotificationChannel notificationChannel=new NotificationChannel(channelId,channelName,NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription(channelDescription);
             NotificationManager notificationManager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
